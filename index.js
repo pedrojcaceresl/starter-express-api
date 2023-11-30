@@ -13,7 +13,7 @@ const { JWT } = require('google-auth-library');
 
 // console.log(process.env.KEY)
 
-const CREDENTIALS = JSON.parse(process.env.CREDENTIALS);
+const CREDENTIALS = process.env.CREDENTIALS;
 
 const KEY = CREDENTIALS['private_key'];
 const EMAIL = CREDENTIALS['client_email'];
