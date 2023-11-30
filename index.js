@@ -14,7 +14,7 @@ const { JWT } = require("google-auth-library");
 const saveToGoogleSheets = async (surveyResponses) => {
     const serviceAccountAuth = new JWT({
         email: process.env.EMAIL,
-        key: process.env.KEY,
+        key: JSON.parse(process.env.KEY),
         scopes: ["https://www.googleapis.com/auth/spreadsheets"],
     });
 
