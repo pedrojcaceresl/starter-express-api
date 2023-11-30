@@ -1,12 +1,13 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 const cors = require("cors");
-require("dotenv").config();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: '*' }));
+
 
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 const { JWT } = require("google-auth-library");
