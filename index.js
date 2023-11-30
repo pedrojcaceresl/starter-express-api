@@ -11,7 +11,7 @@ app.use(cors());
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 const { JWT } = require("google-auth-library");
 
-const KEY = process.env.GOOGLE_PRIVATE_KEY;
+const KEY = process.env['GOOGLE_PRIVATE_KEY'];
 const EMAIL = process.env.GOOGLE_EMAIL;
 const SHEET_ID = process.env.GOOGLE_SHEET_ID;
 
