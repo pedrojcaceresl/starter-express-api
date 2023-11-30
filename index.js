@@ -2,33 +2,29 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const cors = require('cors');
-require('dotenv').config();
+const cors = require("cors");
+require("dotenv").config();
 
 app.use(express.json());
 app.use(cors());
 
-const { GoogleSpreadsheet } = require('google-spreadsheet')
-const { JWT } = require('google-auth-library');
+const { GoogleSpreadsheet } = require("google-spreadsheet");
+const { JWT } = require("google-auth-library");
 
-// console.log(process.env.KEY)
+const KEY = process.env.GOOGLE_PRIVATE_KEY;
+const EMAIL = process.env.GOOGLE_EMAIL;
+const SHEET_ID = process.env.GOOGLE_SHEET_ID;
 
-const CREDENTIALS = process.env.CREDENTIALS;
-
-const KEY = CREDENTIALS['private_key'];
-const EMAIL = CREDENTIALS['client_email'];
+console.log({ KEY, EMAIL, SHEET_ID })
 
 const saveToGoogleSheets = async (surveyResponses) => {
-
     const serviceAccountAuth = new JWT({
         email: EMAIL,
         key: KEY,
-        scopes: [
-            'https://www.googleapis.com/auth/spreadsheets',
-        ],
+        scopes: ["https://www.googleapis.com/auth/spreadsheets"],
     });
 
-    const doc = new GoogleSpreadsheet(process.env.SHEET_ID, serviceAccountAuth);
+    const doc = new GoogleSpreadsheet(SHEET_ID, serviceAccountAuth);
     await doc.loadInfo();
     const sheet = doc.sheetsByIndex[0];
 
@@ -49,40 +45,37 @@ const saveToGoogleSheets = async (surveyResponses) => {
 
             // If the header exists, add the value to the corresponding key in rowValues
             if (headerIndex !== -1) {
-                rowValues[key] = Array.isArray(value) ? value.join(', ') : value;
+                rowValues[key] = Array.isArray(value) ? value.join(", ") : value;
             }
         }
     }
 
     // Add the row to the Google Sheets document
     await sheet.addRow(rowValues);
-}
+};
 
-app.get('/', (req, res) => {
-    res.send("App is up and running!")
-})
+app.get("/", (req, res) => {
+    res.send("App is up and running!");
+});
 
-
-app.post('/encuesta', (req, res) => {
+app.post("/encuesta", (req, res) => {
     try {
         const datos = req.body;
-        console.log(req.body)
+        console.log(req.body);
         saveToGoogleSheets(datos);
 
         res.status(200).json({
             ok: true,
-            message: "Datos recibidos!"
-        })
-
+            message: "Datos recibidos!",
+        });
     } catch (error) {
         console.log("Error", error.message);
         return res.status(500).json({
-            message: "Internal Server Error"
-        })
+            message: "Internal Server Error",
+        });
     }
-})
-
+});
 
 app.listen(PORT, () => {
-    console.log(`Listening on port 3000 ${PORT}`);
-})
+    console.log(`Listening on port ${PORT}`);
+});
